@@ -1,0 +1,108 @@
+{
+  "name": "BeatMM - 缅甸最潮DJ音乐社区",
+  "short_name": "BeatMM",
+  "description": "缅甸最潮DJ音乐社区，发现最新最热的DJ音乐，与音乐爱好者互动交流",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f23",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "zh-CN",
+  "categories": ["music", "entertainment", "social"],
+  "icons": [
+    {
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "发现音乐",
+      "short_name": "发现",
+      "description": "发现最新最热的DJ音乐",
+      "url": "/?page=discover",
+      "icons": [{ "src": "icons/shortcut-discover.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "直播中心",
+      "short_name": "直播",
+      "description": "观看DJ现场表演",
+      "url": "/?page=live",
+      "icons": [{ "src": "icons/shortcut-live.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "上传音乐",
+      "short_name": "上传",
+      "description": "分享您的音乐作品",
+      "url": "/?page=upload",
+      "icons": [{ "src": "icons/shortcut-upload.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "BeatMM主页面"
+    },
+    {
+      "src": "screenshots/mobile.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "BeatMM移动端界面"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}
+

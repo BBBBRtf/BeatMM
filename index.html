@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="appTitle">BeatMM - 缅甸最潮DJ音乐社区</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" data-i18n="appDescription" content="缅甸最潮DJ音乐社区，发现最新最热的DJ音乐，与音乐爱好者互动交流">
+    <meta name="keywords" data-i18n="appKeywords" content="DJ, 音乐, 缅甸, 音乐社区, 电子音乐, 流行音乐">
+    <meta name="author" content="BeatMM Team">
+    <meta name="theme-color" content="#667eea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" data-i18n="appTitleShort" content="BeatMM">
+    <meta name="msapplication-TileColor" content="#667eea">
+    <meta name="msapplication-tap-highlight" content="no">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-512x512.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-512x512.png">
+    <link rel="apple-touch-icon" href="icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-512x512.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-512x512.png">
+    
+    <!-- Splash Screens for iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-bg: #0f0f23;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --border-radius: 16px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 背景动画 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundShift 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(5deg); }
+        }
+
+        /* 容器和布局 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 头部导航 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .language-select {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .language-select:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .user-info:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .balance {
+            background: var(--accent-gradient);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 160px);
+            padding-bottom: 80px;
+        }
+
+        /* 登录/注册表单 */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .auth-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* 按钮样式 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 链接样式 */
+        .auth-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .auth-link:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+        }
+
+        /* 复选框样式 */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        /* 用户资料页面 */
+        .profile-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            margin: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 48px;
+            box-shadow: var(--shadow);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* 音乐卡片 */
+        .music-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .music-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .music-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .music-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .music-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .music-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .music-details h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .music-artist {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .music-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .music-price {
+            background: var(--accent-gradient);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* 底部导航 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 12px;
+            transition: var(--transition);
+            border-radius: 12px;
+        }
+
+        .nav-item.active,
+        .nav-item:hover {
+            color: var(--text-primary);
+            background: var(--card-bg);
+            transform: translateY(-2px);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        /* PWA 安装提示 */
+        .install-prompt {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transform: translateY(200px);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .install-prompt.show {
+            transform: translateY(0);
+        }
+
+        .install-prompt h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .install-prompt p {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        .install-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .install-buttons .btn {
+            flex: 1;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .auth-card {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .music-grid {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+
+            .profile-stats {
+                gap: 20px;
+            }
+
+            .nav {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .install-prompt {
+                left: 10px;
+                right: 10px;
+                bottom: 90px;
+            }
+        }
+
+        /* 隐藏类 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 页面切换动画 */
+        .page {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px 20px;
+            color: var(--text-primary);
+            box-shadow: var(--shadow);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            border-left: 4px solid #4ade80;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f87171;
+        }
+
+        /* 离线指示器 */
+        .offline-indicator {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f59e0b;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1002;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .offline-indicator.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部导航 -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">BeatMM</div>
+            <div class="nav-controls">
+                <select class="language-select" id="languageSelect">
+                    <option value="zh">中文</option>
+                    <option value="en">English</option>
+                    <option value="my">မြန်မာ</option>
+                </select>
+                <div class="user-info hidden" id="userInfo">
+                    <span id="userAvatar">🎧</span>
+                    <span class="balance" id="userBalance">余额: 0 MMK</span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+        <!-- 登录页面 -->
+        <div id="loginPage" class="page">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h1 class="auth-title" data-i18n="welcomeTitle">欢迎来到BeatMM</h1>
+                        <p class="auth-subtitle" data-i18n="welcomeSubtitle">缅甸最潮DJ音乐社区</p>
+                    </div>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="phoneLabel">手机号码</label>
+                            <input type="tel" class="form-input" data-i18n="phonePlaceholder" placeholder="输入缅甸手机号码" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="passwordLabel">密码</label>
+                            <input type="password" class="form-input" data-i18n="passwordPlaceholder" placeholder="输入密码" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" data-i18n="loginButton">登录</button>
+                    </form>
+                    <div class="auth-footer">
+                        <p data-i18n="noAccount">还没有账号？<a href="#" class="auth-link" onclick="showRegister()" data-i18n="registerNow">立即注册</a></p>
+                        <div style="margin-top: 15px; padding: 15px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 4px solid #ffc107;">
+                            <span data-i18n="newbieBonus">🎉 新人专享：注册即可获得三天VIP试用体验！</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 注册页面 -->
+        <div id="registerPage" class="page hidden">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <h1 class="auth-title" data-i18n="createAccountTitle">创建新账号</h1>
+                        <p class="auth-subtitle" data-i18n="createAccountSubtitle">加入缅甸最潮DJ音乐社区</p>
+                    </div>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="phoneLabel">手机号码 *</label>
+                            <input type="tel" class="form-input" data-i18n="phonePlaceholder" placeholder="输入缅甸手机号码" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="passwordLabel">密码 *</label>
+                            <input type="password" class="form-input" data-i18n="setPasswordPlaceholder" placeholder="设置密码（6-20位）" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="confirmPasswordLabel">确认密码 *</label>
+                            <input type="password" class="form-input" data-i18n="confirmPasswordPlaceholder" placeholder="再次输入密码" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="nicknameLabel">昵称 *</label>
+                            <input type="text" class="form-input" data-i18n="setNicknamePlaceholder" placeholder="设置您的昵称" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" data-i18n="inviteCodeLabel">邀请码（选填）</label>
+                            <input type="text" class="form-input" data-i18n="inviteCodePlaceholder" placeholder="输入邀请码获得奖励">
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" class="checkbox" required>
+                            <label data-i18n="agreeTerms">我已阅读并同意<a href="#" class="auth-link" data-i18n="userAgreement">用户协议</a>和<a href="#" class="auth-link" data-i18n="privacyPolicy">隐私政策</a></label>
+                        </div>
+                        <button type="submit" class="btn btn-primary" data-i18n="registerButton">注册账号</button>
+                    </form>
+                    <div class="auth-footer">
+                        <p><a href="#" class="auth-link" onclick="showLogin()" data-i18n="backToLogin">返回登录</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主页面 -->
+        <div id="homePage" class="page hidden">
+            <!-- 用户资料头部 -->
+            <div class="profile-header">
+                <div class="profile-avatar">🎧</div>
+                <h2 class="profile-name" id="profileName" data-i18n="defaultNickname">新用户</h2>
+                <div class="profile-badge" data-i18n="vipMember">👑 VIP会员</div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label" data-i18n="following">关注</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label" data-i18n="followers">粉丝</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">Lv.1</div>
+                        <div class="stat-label" data-i18n="level">等级</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label" data-i18n="hours">小时</div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                    <button class="btn btn-secondary" data-i18n="recent">🕒 最近</button>
+                    <button class="btn btn-secondary" data-i18n="local">📍 本地</button>
+                    <button class="btn btn-secondary" data-i18n="cloud">☁️ 网盘</button>
+                    <button class="btn btn-secondary" data-i18n="dressUp">📥 装扮</button>
+                </div>
+            </div>
+
+            <!-- 热门音乐 -->
+            <section style="padding: 20px;">
+                <h2 style="margin-bottom: 20px; font-size: 24px;" data-i18n="hotMusicTitle">🎵 热门音乐</h2>
+                <div class="music-grid">
+                    <div class="music-card">
+                        <div class="music-info">
+                            <div class="music-icon">🎧</div>
+                            <div class="music-details">
+                                <h3 data-i18n="song1Title">缅甸之夜</h3>
+                                <div class="music-artist" data-i18n="song1Artist">DJ Khant Min</div>
+                            </div>
+                        </div>
+                        <div class="music-stats">
+                            <span data-i18n="viewsLikes">👁 245 ❤️ 56</span>
+                            <span class="music-price" data-i18n="free">免费</span>
+                        </div>
+                    </div>
+                    <div class="music-card">
+                        <div class="music-info">
+                            <div class="music-icon">🎵</div>
+                            <div class="music-details">
+                                <h3 data-i18n="song2Title">仰光节奏</h3>
+                                <div class="music-artist" data-i18n="song2Artist">DJ Aung</div>
+                            </div>
+                        </div>
+                        <div class="music-stats">
+                            <span data-i18n="viewsLikes">👁 189 ❤️ 42</span>
+                            <span class="music-price" data-i18n="price1">1,000 MMK</span>
+                        </div>
+                    </div>
+                    <div class="music-card">
+                        <div class="music-info">
+                            <div class="music-icon">🎹</div>
+                            <div class="music-details">
+                                <h3 data-i18n="song3Title">伊洛瓦底河</h3>
+                                <div class="music-artist" data-i18n="song3Artist">DJ Min Thu</div>
+                            </div>
+                        </div>
+                        <div class="music-stats">
+                            <span data-i18n="viewsLikes">👁 1.2K ❤️ 345</span>
+                            <span class="music-price" data-i18n="price2">1,500 MMK</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 底部导航 -->
+    <nav class="bottom-nav hidden" id="bottomNav">
+        <div class="nav-items">
+            <a href="#" class="nav-item active" onclick="showPage('home')">
+                <div class="nav-icon">🏠</div>
+                <div data-i18n="navRecommend">推荐</div>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('discover')">
+                <div class="nav-icon">🔍</div>
+                <div data-i18n="navDiscover">发现</div>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('live')">
+                <div class="nav-icon">📺</div>
+                <div data-i18n="navLive">直播</div>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('upload')">
+                <div class="nav-icon">📤</div>
+                <div data-i18n="navUpload">上传</div>
+            </a>
+            <a href="#" class="nav-item" onclick="showPage('profile')">
+                <div class="nav-icon">👤</div>
+                <div data-i18n="navMy">我的</div>
+            </a>
+        </div>
+    </nav>
+
+    <!-- PWA 安装提示 -->
+    <div id="installPrompt" class="install-prompt">
+        <h3 data-i18n="installPromptTitle">📱 安装 BeatMM 应用</h3>
+        <p data-i18n="installPromptText">将 BeatMM 添加到主屏幕，享受更好的使用体验！</p>
+        <div class="install-buttons">
+            <button class="btn btn-secondary" onclick="hideInstallPrompt()" data-i18n="laterButton">稍后</button>
+            <button class="btn btn-primary" onclick="installApp()" data-i18n="installButton">安装</button>
+        </div>
+    </div>
+
+    <!-- 离线指示器 -->
+    <div id="offlineIndicator" class="offline-indicator">
+        <span data-i18n="offlineMessage">📡 您当前处于离线状态</span>
+    </div>
+
+    <!-- 通知容器 -->
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // PWA 相关变量
+        let deferredPrompt;
+        let isOnline = navigator.onLine;
+
+        // 应用状态
+        let currentUser = null;
+        let currentPage = 'login';
+
+        // 多语言支持
+        const translations = {
+            zh: {
+                appTitle: 'BeatMM - 缅甸最潮DJ音乐社区',
+                appDescription: '缅甸最潮DJ音乐社区，发现最新最热的DJ音乐，与音乐爱好者互动交流',
+                appKeywords: 'DJ, 音乐, 缅甸, 音乐社区, 电子音乐, 流行音乐',
+                appTitleShort: 'BeatMM',
+                welcomeTitle: '欢迎来到BeatMM',
+                welcomeSubtitle: '缅甸最潮DJ音乐社区',
+                phoneLabel: '手机号码',
+                phonePlaceholder: '输入缅甸手机号码',
+                passwordLabel: '密码',
+                passwordPlaceholder: '输入密码',
+                loginButton: '登录',
+                noAccount: '还没有账号？',
+                registerNow: '立即注册',
+                newbieBonus: '🎉 新人专享：注册即可获得三天VIP试用体验！',
+                createAccountTitle: '创建新账号',
+                createAccountSubtitle: '加入缅甸最潮DJ音乐社区',
+                setPasswordPlaceholder: '设置密码（6-20位）',
+                confirmPasswordLabel: '确认密码',
+                confirmPasswordPlaceholder: '再次输入密码',
+                nicknameLabel: '昵称',
+                setNicknamePlaceholder: '设置您的昵称',
+                inviteCodeLabel: '邀请码（选填）',
+                inviteCodePlaceholder: '输入邀请码获得奖励',
+                agreeTerms: '我已阅读并同意',
+                userAgreement: '用户协议',
+                privacyPolicy: '隐私政策',
+                registerButton: '注册账号',
+                backToLogin: '返回登录',
+                defaultNickname: '新用户',
+                vipMember: '👑 VIP会员',
+                following: '关注',
+                followers: '粉丝',
+                level: '等级',
+                hours: '小时',
+                recent: '🕒 最近',
+                local: '📍 本地',
+                cloud: '☁️ 网盘',
+                dressUp: '📥 装扮',
+                hotMusicTitle: '🎵 热门音乐',
+                song1Title: '缅甸之夜',
+                song1Artist: 'DJ Khant Min',
+                song2Title: '仰光节奏',
+                song2Artist: 'DJ Aung',
+                song3Title: '伊洛瓦底河',
+                song3Artist: 'DJ Min Thu',
+                viewsLikes: '👁 浏览 ❤️ 喜欢',
+                free: '免费',
+                price1: '1,000 MMK',
+                price2: '1,500 MMK',
+                navRecommend: '推荐',
+                navDiscover: '发现',
+                navLive: '直播',
+                navUpload: '上传',
+                navMy: '我的',
+                installPromptTitle: '📱 安装 BeatMM 应用',
+                installPromptText: '将 BeatMM 添加到主屏幕，享受更好的使用体验！',
+                laterButton: '稍后',
+                installButton: '安装',
+                offlineMessage: '📡 您当前处于离线状态',
+                loginSuccess: '登录成功！欢迎回来！',
+                loginError: '请填写完整的登录信息',
+                registerSuccess: '注册成功！获得100 MMK签到奖励！',
+                registerErrorRequired: '请填写所有必填项',
+                registerErrorPasswordMatch: '两次输入的密码不一致',
+                registerErrorAgreement: '请同意用户协议和隐私政策',
+                playing: '正在播放: ',
+                languageSwitched: '语言已切换到: '
+            },
+            en: {
+                appTitle: 'BeatMM - Myanmar Hottest DJ Music Community',
+                appDescription: 'Myanmar Hottest DJ Music Community, discover the latest and hottest DJ music, interact with music lovers',
+                appKeywords: 'DJ, Music, Myanmar, Music Community, Electronic Music, Pop Music',
+                appTitleShort: 'BeatMM',
+                welcomeTitle: 'Welcome to BeatMM',
+                welcomeSubtitle: 'Myanmar Hottest DJ Music Community',
+                phoneLabel: 'Phone Number',
+                phonePlaceholder: 'Enter Myanmar phone number',
+                passwordLabel: 'Password',
+                passwordPlaceholder: 'Enter password',
+                loginButton: 'Login',
+                noAccount: 'Don\'t have an account?',
+                registerNow: 'Register Now',
+                newbieBonus: '🎉 Newbie Exclusive: Register to get 3 days VIP trial!',
+                createAccountTitle: 'Create New Account',
+                createAccountSubtitle: 'Join Myanmar Hottest DJ Music Community',
+                setPasswordPlaceholder: 'Set password (6-20 digits)',
+                confirmPasswordLabel: 'Confirm Password',
+                confirmPasswordPlaceholder: 'Re-enter password',
+                nicknameLabel: 'Nickname',
+                setNicknamePlaceholder: 'Set your nickname',
+                inviteCodeLabel: 'Invite Code (Optional)',
+                inviteCodePlaceholder: 'Enter invite code to get rewards',
+                agreeTerms: 'I have read and agree to the ',
+                userAgreement: 'User Agreement',
+                privacyPolicy: 'Privacy Policy',
+                registerButton: 'Register Account',
+                backToLogin: 'Back to Login',
+                defaultNickname: 'New User',
+                vipMember: '👑 VIP Member',
+                following: 'Following',
+                followers: 'Followers',
+                level: 'Level',
+                hours: 'Hours',
+                recent: '🕒 Recent',
+                local: '📍 Local',
+                cloud: '☁️ Cloud',
+                dressUp: '📥 Dress Up',
+                hotMusicTitle: '🎵 Hot Music',
+                song1Title: 'Myanmar Night',
+                song1Artist: 'DJ Khant Min',
+                song2Title: 'Yangon Rhythm',
+                song2Artist: 'DJ Aung',
+                song3Title: 'Ayeyarwady River',
+                song3Artist: 'DJ Min Thu',
+                viewsLikes: '👁 Views ❤️ Likes',
+                free: 'Free',
+                price1: '1,000 MMK',
+                price2: '1,500 MMK',
+                navRecommend: 'Recommend',
+                navDiscover: 'Discover',
+                navLive: 'Live',
+                navUpload: 'Upload',
+                navMy: 'My',
+                installPromptTitle: '📱 Install BeatMM App',
+                installPromptText: 'Add BeatMM to your home screen for a better experience!',
+                laterButton: 'Later',
+                installButton: 'Install',
+                offlineMessage: '📡 You are currently offline',
+                loginSuccess: 'Login successful! Welcome back!',
+                loginError: 'Please fill in complete login information',
+                registerSuccess: 'Registration successful! Get 100 MMK sign-up bonus!',
+                registerErrorRequired: 'Please fill in all required fields',
+                registerErrorPasswordMatch: 'Passwords do not match',
+                registerErrorAgreement: 'Please agree to the User Agreement and Privacy Policy',
+                playing: 'Now Playing: ',
+                languageSwitched: 'Language switched to: '
+            },
+            my: {
+                appTitle: 'BeatMM - မြန်မာ့အမိုက်ဆုံး DJ ဂီတအသိုင်းအဝိုင်း',
+                appDescription: 'မြန်မာ့အမိုက်ဆုံး DJ ဂီတအသိုင်းအဝိုင်း၊ နောက်ဆုံးပေါ်နှင့် အကျော်ကြားဆုံး DJ ဂီတများကို ရှာဖွေပါ၊ ဂီတချစ်သူများနှင့် အပြန်အလှန်ဆက်သွယ်ပါ',
+                appKeywords: 'DJ, ဂီတ, မြန်မာ, ဂီတအသိုင်းအဝိုင်း, အီလက်ထရောနစ်ဂီတ, ပေါ့ပ်ဂီတ',
+                appTitleShort: 'BeatMM',
+                welcomeTitle: 'BeatMM မှ ကြိုဆိုပါသည်',
+                welcomeSubtitle: 'မြန်မာ့အမိုက်ဆုံး DJ ဂီတအသိုင်းအဝိုင်း',
+                phoneLabel: 'ဖုန်းနံပါတ်',
+                phonePlaceholder: 'မြန်မာဖုန်းနံပါတ်ထည့်ပါ',
+                passwordLabel: 'စကားဝှက်',
+                passwordPlaceholder: 'စကားဝှက်ထည့်ပါ',
+                loginButton: 'ဝင်မည်',
+                noAccount: 'အကောင့်မရှိသေးဘူးလား။',
+                registerNow: 'အခုပဲ စာရင်းသွင်းပါ',
+                newbieBonus: '🎉 အသစ်ဝင်ရောက်သူများအတွက်- ၃ ရက် VIP အစမ်းသုံးခွင့်ရယူပါ!',
+                createAccountTitle: 'အကောင့်အသစ်ဖန်တီးပါ',
+                createAccountSubtitle: 'မြန်မာ့အမိုက်ဆုံး DJ ဂီတအသိုင်းအဝိုင်းသို့ ဝင်ရောက်ပါ',
+                setPasswordPlaceholder: 'စကားဝှက်သတ်မှတ်ပါ (၆-၂၀ လုံး)',
+                confirmPasswordLabel: 'စကားဝှက်ကို အတည်ပြုပါ',
+                confirmPasswordPlaceholder: 'စကားဝှက်ကို ထပ်မံထည့်ပါ',
+                nicknameLabel: 'အမည်ပြောင်',
+                setNicknamePlaceholder: 'သင့်အမည်ပြောင်ကို သတ်မှတ်ပါ',
+                inviteCodeLabel: 'ဖိတ်ကြားကုဒ် (ရွေးချယ်နိုင်သည်)',
+                inviteCodePlaceholder: 'ဆုလာဘ်များရရှိရန် ဖိတ်ကြားကုဒ်ထည့်ပါ',
+                agreeTerms: 'ကျွန်ုပ်သည် သဘောတူညီချက်ကို ဖတ်ပြီး သဘောတူပါသည်',
+                userAgreement: 'အသုံးပြုသူသဘောတူညီချက်',
+                privacyPolicy: 'ကိုယ်ရေးကိုယ်တာမူဝါဒ',
+                registerButton: 'အကောင့်စာရင်းသွင်းပါ',
+                backToLogin: 'ဝင်ရန်ပြန်သွားပါ',
+                defaultNickname: 'အသုံးပြုသူအသစ်',
+                vipMember: '👑 VIP အဖွဲ့ဝင်',
+                following: 'Follow လုပ်ထားသူ',
+                followers: 'Follower များ',
+                level: 'အဆင့်',
+                hours: 'နာရီ',
+                recent: '🕒 မကြာသေးမီ',
+                local: '📍 ဒေသတွင်း',
+                cloud: '☁️ Cloud',
+                dressUp: '📥 အလှဆင်',
+                hotMusicTitle: '🎵 လူကြိုက်များသောဂီတ',
+                song1Title: 'မြန်မာ့ည',
+                song1Artist: 'DJ Khant Min',
+                song2Title: 'ရန်ကုန်စည်းချက်',
+                song2Artist: 'DJ Aung',
+                song3Title: 'ဧရာဝတီမြစ်',
+                song3Artist: 'DJ Min Thu',
+                viewsLikes: '👁 ကြည့်ရှုမှု ❤️ ကြိုက်နှစ်သက်မှု',
+                free: 'အခမဲ့',
+                price1: '1,000 MMK',
+                price2: '1,500 MMK',
+                navRecommend: 'အကြံပြုရန်',
+                navDiscover: 'ရှာဖွေရန်',
+                navLive: 'တိုက်ရိုက်',
+                navUpload: 'တင်ရန်',
+                navMy: 'ကျွန်ုပ်',
+                installPromptTitle: '📱 BeatMM အက်ပ်ကို ထည့်သွင်းပါ',
+                installPromptText: 'BeatMM ကို သင့်ပင်မစခရင်သို့ ထည့်သွင်းပြီး ပိုမိုကောင်းမွန်သော အတွေ့အကြုံကို ရယူပါ!',
+                laterButton: 'နောက်မှ',
+                installButton: 'ထည့်သွင်းပါ',
+                offlineMessage: '📡 သင် လက်ရှိ အော့ဖ်လိုင်း ဖြစ်နေသည်',
+                loginSuccess: 'ဝင်ရောက်မှု အောင်မြင်ပါသည်! ပြန်လည်ကြိုဆိုပါသည်!',
+                loginError: 'ကျေးဇူးပြု၍ ဝင်ရောက်မှု အချက်အလက် အပြည့်အစုံ ထည့်သွင်းပါ',
+                registerSuccess: 'စာရင်းသွင်းခြင်း အောင်မြင်ပါသည်! 100 MMK စာရင်းသွင်းခြင်း ဘောနပ်စ် ရယူပါ!',
+                registerErrorRequired: 'ကျေးဇူးပြု၍ လိုအပ်သော အကွက်များ အားလုံးကို ဖြည့်ပါ',
+                registerErrorPasswordMatch: 'စကားဝှက်များ မတူညီပါ',
+                registerErrorAgreement: 'ကျေးဇူးပြု၍ အသုံးပြုသူ သဘောတူညီချက်နှင့် ကိုယ်ရေးကိုယ်တာ မူဝါဒကို သဘောတူပါ',
+                playing: 'ဖွင့်နေသည်: ',
+                languageSwitched: 'ဘာသာစကား ပြောင်းလဲပြီး: '
+            }
+        };
+
+        let currentLang = localStorage.getItem('beatmm_lang') || 'zh';
+
+        function updateContent() {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    // 对于input的placeholder属性
+                    if (element.tagName === 'INPUT' && element.hasAttribute('placeholder')) {
+                        element.placeholder = translations[currentLang][key];
+                    } else if (element.tagName === 'META' && element.hasAttribute('content')) {
+                        // 对于meta标签的content属性
+                        element.content = translations[currentLang][key];
+                    } else if (element.tagName === 'META' && element.hasAttribute('title')) {
+                        // 对于meta标签的title属性
+                        element.title = translations[currentLang][key];
+                    } else {
+                        element.textContent = translations[currentLang][key];
+                    }
+                }
+            });
+
+            // 特殊处理标题
+            document.title = translations[currentLang].appTitle;
+
+            // 更新语言选择框
+            document.getElementById('languageSelect').value = currentLang;
+        }
+
+        // Service Worker 注册
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered successfully:', registration.scope);
+                        
+                        // 检查更新
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    showNotification(translations[currentLang].appUpdatedMessage || '应用已更新，请刷新页面获取最新版本');
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+
+        // PWA 安装提示
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').classList.add('show');
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('用户接受了安装提示');
+                    } else {
+                        console.log('用户拒绝了安装提示');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installPrompt').classList.remove('show');
+                });
+            }
+        }
+
+        function hideInstallPrompt() {
+            document.getElementById('installPrompt').classList.remove('show');
+        }
+
+        // 离线状态检测
+        window.addEventListener('online', () => {
+            isOnline = true;
+            document.getElementById('offlineIndicator').classList.remove('show');
+            showNotification(translations[currentLang].onlineMessage || '您已恢复在线');
+        });
+
+        window.addEventListener('offline', () => {
+            isOnline = false;
+            document.getElementById('offlineIndicator').classList.add('show');
+            showNotification(translations[currentLang].offlineMessage || '您当前处于离线状态', 'error');
+        });
+
+        function showPage(pageName) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.add('hidden');
+            });
+
+            // 显示目标页面
+            const targetPage = document.getElementById(pageName + 'Page');
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                currentPage = pageName;
+            }
+
+            // 更新导航状态
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const activeNavItem = document.querySelector(`[onclick="showPage('${pageName}')"]`);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+        }
+
+        // 显示登录页面
+        function showLogin() {
+            showPage('login');
+            document.getElementById('bottomNav').classList.add('hidden');
+        }
+
+        // 显示注册页面
+        function showRegister() {
+            showPage('register');
+            document.getElementById('bottomNav').classList.add('hidden');
+        }
+
+        // 显示通知
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // 登录处理
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const phone = this.querySelector('input[type="tel"]').value;
+            const password = this.querySelector('input[type="password"]').value;
+
+            // 模拟登录验证
+            if (phone && password) {
+                // 模拟用户数据
+                currentUser = {
+                    phone: phone,
+                    nickname: translations[currentLang].defaultNickname,
+                    balance: 100,
+                    vip: true
+                };
+
+                // 更新用户界面
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('userBalance').textContent = `${translations[currentLang].balanceText}: ${currentUser.balance} MMK`;
+                document.getElementById('profileName').textContent = currentUser.nickname;
+                document.getElementById('bottomNav').classList.remove('hidden');
+
+                // 保存用户数据
+                saveUserData();
+
+                // 显示主页
+                showPage('home');
+                showNotification(translations[currentLang].loginSuccess);
+            } else {
+                showNotification(translations[currentLang].loginError, 'error');
+            }
+        });
+
+        // 注册处理
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const phone = this.querySelector('input[type="tel"]"]').value;
+            const password = this.querySelectorAll('input[type="password"]\]')[0].value;
+            const confirmPassword = this.querySelectorAll('input[type="password"]\]')[1].value;
+            const nickname = this.querySelector('input[type="text"]"]').value;
+            const agreement = this.querySelector('input[type="checkbox"]"]').checked;
+
+            // 验证表单
+            if (!phone || !password || !nickname) {
+                showNotification(translations[currentLang].registerErrorRequired, 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showNotification(translations[currentLang].registerErrorPasswordMatch, 'error');
+                return;
+            }
+
+            if (!agreement) {
+                showNotification(translations[currentLang].registerErrorAgreement, 'error');
+                return;
+            }
+
+            // 模拟注册成功
+            currentUser = {
+                phone: phone,
+                nickname: nickname,
+                balance: 100, // 签到奖励
+                vip: true
+            };
+
+            // 更新用户界面
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('userBalance').textContent = `${translations[currentLang].balanceText}: ${currentUser.balance} MMK`;
+            document.getElementById('profileName').textContent = currentUser.nickname;
+            document.getElementById('bottomNav').classList.remove('hidden');
+
+            // 保存用户数据
+            saveUserData();
+
+            // 显示主页
+            showPage('home');
+            showNotification(translations[currentLang].registerSuccess);
+        });
+
+        // 音乐卡片点击事件
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.music-card')) {
+                const card = e.target.closest('.music-card');
+                const title = card.querySelector('h3').textContent;
+                showNotification(`${translations[currentLang].playing}${title}`);
+                
+                // 添加播放动画效果
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 150);
+            }
+        });
+
+        // 语言切换
+        document.getElementById('languageSelect').addEventListener('change', function(e) {
+            currentLang = e.target.value;
+            localStorage.setItem('beatmm_lang', currentLang);
+            updateContent();
+            showNotification(`${translations[currentLang].languageSwitched}${e.target.selectedOptions[0].text}`);
+        });
+
+        // 保存用户信息到本地存储
+        function saveUserData() {
+            if (currentUser) {
+                localStorage.setItem('beatmm_user', JSON.stringify(currentUser));
+            }
+        }
+
+        // 初始化应用
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否有保存的用户信息
+            const savedUser = localStorage.getItem('beatmm_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('userBalance').textContent = `${translations[currentLang].balanceText}: ${currentUser.balance} MMK`;
+                document.getElementById('profileName').textContent = currentUser.nickname;
+                document.getElementById('bottomNav').classList.remove('hidden');
+                showPage('home');
+            } else {
+                // 没有用户数据，显示登录页面
+                showPage('login');
+                document.getElementById('bottomNav').classList.add('hidden');
+            }
+
+            // 初始化语言
+            updateContent();
+
+            // 初始化网络状态
+            if (!isOnline) {
+                document.getElementById('offlineIndicator').classList.add('show');
+            }
+        });
+
+        // 页面卸载时保存数据
+        window.addEventListener('beforeunload', saveUserData);
+
+        // 推送通知权限请求
+        if ('Notification' in window && 'serviceWorker' in navigator) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    console.log('通知权限已授予');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
